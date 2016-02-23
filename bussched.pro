@@ -4,6 +4,7 @@ QT += qml quick widgets
 
 CONFIG += c++11
 CONFIG += console
+CONFIG += debug
 
 SOURCES += main.cpp \
     source.cpp

@@ -57,18 +57,19 @@ void source::gotPosReply()
    reportc(Q_FUNC_INFO);
    QByteArray theData = posReply->readAll();
    QJsonDocument doc = QJsonDocument::fromJson(theData);
-   qDebug() << "doc is " << doc;
+//   qDebug() << "doc is " << doc;
    QJsonObject obj = doc.object();
    QVariantMap var = obj.toVariantMap();
    QList<QString> keys= var.keys();
-   report (var.size());
+   qDebug() << var.size();
    for (auto elt = keys.begin(); elt != keys.end(); ++ elt) {
-       std::cout << elt->toStdString() << std::endl;
+       qDebug() << *elt;
    }
    QVariant header = var["header"];
-   QJsonArray data = var["entity"].toJsonArray();
-   reportqs (header.toString());
-   reportqs (QString("number of entities: %1").arg(data.size()));
+   QStringList data = var["entity"].toStringList();
+//   reportqs (header.toString());
+   qDebug() << data.join('\n');
+//   reportqs (QString("number of entities: %1").arg(data.size()));
 //   reportc ("\n\n\tbyte array\n");
 //   reportba (theData);
    reportqs(QString ("finished %1").arg(Q_FUNC_INFO ));

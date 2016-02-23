@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
@@ -20,12 +21,12 @@ int main(int argc, char *argv[])
 
     qDebug() << Q_FUNC_INFO << "starting";
 //    qInstallMessageHandler(myDebug);
-//    QGuiApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
-//    QQmlApplicationEngine engine;
-//    qmlRegisterType<source>("com.berndhs",1,0,"Source");
-//    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    QQmlApplicationEngine engine;
+    qmlRegisterType<source>("com.berndhs",1,0,"Source");
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-//    return app.exec();
-    qDebug () << "all done";
+    int done = app.exec();
+    qDebug () << Q_FUNC_INFO << "all done" << done;
 }
