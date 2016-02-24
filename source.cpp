@@ -59,9 +59,14 @@ void source::gotPosReply()
    QJsonDocument doc = QJsonDocument::fromJson(theData);
 //   qDebug() << "doc is " << doc;
    QJsonObject obj = doc.object();
+   QByteArray pretty = doc.toJson();
    QVariantMap var = obj.toVariantMap();
    QList<QString> keys= var.keys();
    qDebug() << var.size();
+   QJsonObject ent = doc["entity"];
+   QByteArray entBytes = ent.toJson();
+   qDebug() << entBytes;
+//   qDebug () << var;
    for (auto elt = keys.begin(); elt != keys.end(); ++ elt) {
        qDebug() << *elt;
    }
