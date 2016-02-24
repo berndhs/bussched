@@ -10,11 +10,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void myDebug (QtMsgType type, const QMessageLogContext & context, const QString & msg)
-{
-    fprintf (stderr, ("severity %d msg %s\n",type,msg.toStdString().c_str()));
-    fflush (stderr);
-}
+//void myDebug (QtMsgType type, const QMessageLogContext & context, const QString & msg)
+//{
+//    fprintf (stderr, ("severity %d msg %s\n",type,msg.toStdString().c_str()));
+//    fflush (stderr);
+//}
 
 int main(int argc, char *argv[])
 {

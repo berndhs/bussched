@@ -6,11 +6,12 @@ CONFIG += c++11
 CONFIG += console
 CONFIG += debug
 
-SOURCES += main.cpp \
-    source.cpp
+SOURCES += \
+    src/main.cpp \
+    src/source.cpp
 
 HEADERS += \
-    source.h
+    src/source.h
 
 RESOURCES += qml.qrc
 
