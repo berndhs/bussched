@@ -60,20 +60,13 @@ void source::gotPosReply()
 //   qDebug() << "doc is " << doc;
    QJsonObject obj = doc.object();
    QByteArray pretty = doc.toJson();
-   QVariantMap var = obj.toVariantMap();
-   QList<QString> keys= var.keys();
-   qDebug() << var.size();
-   QJsonObject ent = doc["entity"];
-   QByteArray entBytes = ent.toJson();
-   qDebug() << entBytes;
-//   qDebug () << var;
-   for (auto elt = keys.begin(); elt != keys.end(); ++ elt) {
-       qDebug() << *elt;
-   }
-   QVariant header = var["header"];
-   QStringList data = var["entity"].toStringList();
+   QVariant var = obj.toVariant();
+   qDebug() << "var can convert to \n" <<
+               "string " << var.canConvert(QMetaType::QString) << "\n"
+            << "stringlist " << var.canConvert(QMetaType::QStringList)<< "\n"
+            << "QMetaType::QVariantList" << var.canConvert(QMetaType::QVariantList)<< "\n"
+            << "variantmap " << var.canConvert<QVariantMap>();
 //   reportqs (header.toString());
-   qDebug() << data.join('\n');
 //   reportqs (QString("number of entities: %1").arg(data.size()));
 //   reportc ("\n\n\tbyte array\n");
 //   reportba (theData);
