@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
+#include <QMap>
+#include <QMultiMap>
+#include <QVariant>
 
 class source : public QObject
 {
@@ -44,6 +47,8 @@ public slots:
 
 private:
 
+    void pickApartPos (QByteArray theData);
+
     QNetworkAccessManager qnam;
 
     QNetworkRequest  positionReq;
@@ -60,6 +65,11 @@ private:
     QString m_posData;
     QString m_schedData;
     QString m_staticData;
+
+
+    typedef QMap<QString,QVariant> PosDataType;
+
+    QMultiMap<QString,PosDataType> m_posMap;
 };
 
 
