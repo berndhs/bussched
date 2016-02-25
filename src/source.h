@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
+#include <QPair>
 #include <QMap>
 #include <QMultiMap>
 #include <QVariant>
@@ -68,8 +69,15 @@ private:
 
 
     typedef QMap<QString,QVariant> PosDataType;
+    typedef QPair<double,double>   Pos;
 
     QMultiMap<QString,PosDataType> m_posMap;
+    QMultiMap<Pos,QString>         m_positions;
+
+    double latMin;
+    double latMax;
+    double lonMin;
+    double lonMax;
 };
 
 

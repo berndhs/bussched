@@ -43,7 +43,11 @@ source::source(QObject *parent) : QObject(parent),
     positionReq(QUrl("http://api.octa.net/gtfsrealtime/protobuf/vehiclepositions.aspx?format=json")),
     scheduleReq(QUrl("http://api.octa.net/gtfsrealtime/protobuf/tripupdates.aspx?format=json")),
     staticReq(QUrl("http://api.octa.net/gtfsrealtime/protobuf/servicealerts.aspx?format=json")),
-    m_reqCount(0)
+    m_reqCount(0),
+    latMin(90),
+    latMax(-90),
+    lonMin(180),
+    lonMax(-180)
 {
     reportc(Q_FUNC_INFO);
 
@@ -96,17 +100,24 @@ void source::pickApartPos (QByteArray theData)
 //        qDebug() << "id\n" << dataMap["id"] ;
         QVariantMap vehicleMap = dataMap["vehicle"].toMap();
         QVariantMap posMap = vehicleMap["position"].toMap();
+        double lat = posMap["latitude"].toDouble();
+        double lon = posMap["longitude"].toDouble();
+        if (lat < latMin) latMin = lat;
+        if (lat > latMax) latMax = lat;
+        if (lon < lonMin) lonMin = lon;
+        if (lon > lonMax) lonMax = lon;
         PosDataType pd;
         pd.insert("bearing",posMap["bearing"].toDouble());
-        pd.insert("lat",posMap["latitude"].toDouble());
-        qDebug () << "lat" << posMap["latitude"];
-        pd.insert("lon",posMap["longitude"].toDouble());
+        pd.insert("lat",lat);
+        pd.insert("lon",lon);
         pd.insert("speed",posMap["speed"].toDouble());
 //        qDebug() << "\nvehicle\n" << vehicleMap["position"] << "\n\t route]n" << vehicleMap["trip"];
         QVariantMap tripMap = vehicleMap["trip"].toMap();
 //        qDebug() << "\n\t\ttrip " << "route" <<tripMap["route_id"] << "trip" << tripMap["trip_id"];
         pd.insert("trip_id",tripMap["trip_id"].toString());
-        m_posMap.insertMulti(tripMap["route_id"].toString(),pd);
+        QString route = tripMap["route_id"].toString();
+        m_posMap.insertMulti(route,pd);
+        m_positions.insertMulti(Pos(lat,lon), route);
         ++e;
     }
 
@@ -126,6 +137,8 @@ void source::gotPosReply()
         qDebug() << it.key();
         qDebug() << it.value();
     }
+    qDebug() << " lat from " << latMin << " to " << latMax;
+    qDebug() << " lon from " << lonMin << " to " << lonMax;
    reportqs(QString ("finished %1").arg(Q_FUNC_INFO ));
 }
 
