@@ -44,13 +44,14 @@ source::source(QObject *parent) : QObject(parent),
     scheduleReq(QUrl("http://api.octa.net/gtfsrealtime/protobuf/tripupdates.aspx?format=json")),
     staticReq(QUrl("http://api.octa.net/gtfsrealtime/protobuf/servicealerts.aspx?format=json")),
     m_reqCount(0),
+    m_busPositions(0),
     latMin(90),
     latMax(-90),
     lonMin(180),
     lonMax(-180)
 {
     reportc(Q_FUNC_INFO);
-
+    m_busPositions = new BusPositions(this);
 }
 
 void source::askPositions()
@@ -73,6 +74,19 @@ void source::printData()
 
     qDebug() << Q_FUNC_INFO;
     qDebug () << " all the same " << ((m_posData == m_schedData) && (m_posData == m_staticData));
+}
+
+void source::setXY(double xMin, double xMax, double yMin, double yMax)
+{
+    double latRange = latMax - latMin;
+    double lonRange = lonMax - lonMin;
+    double xRange = xMax - xMin;
+    double yRange = yMax - yMin;
+    double latScale = latRange / yRange;
+    double lonScale = lonRange / xRange;
+    m_busPositions->setScaleLat(latScale);
+    m_busPositions->setScaleLon(lonScale);
+    m_busPositions->signalDataChanged();
 }
 
 QString source::sourceString() const
@@ -107,17 +121,25 @@ void source::pickApartPos (QByteArray theData)
         if (lon < lonMin) lonMin = lon;
         if (lon > lonMax) lonMax = lon;
         PosDataType pd;
+        BusInfo bi;
         pd.insert("bearing",posMap["bearing"].toDouble());
+        bi.setBearing(posMap["bearing"].toDouble());
         pd.insert("lat",lat);
         pd.insert("lon",lon);
+        bi.setLat(lat);
+        bi.setLon(lon);
         pd.insert("speed",posMap["speed"].toDouble());
+        bi.setSpeed(posMap["speed"].toDouble());
 //        qDebug() << "\nvehicle\n" << vehicleMap["position"] << "\n\t route]n" << vehicleMap["trip"];
         QVariantMap tripMap = vehicleMap["trip"].toMap();
 //        qDebug() << "\n\t\ttrip " << "route" <<tripMap["route_id"] << "trip" << tripMap["trip_id"];
         pd.insert("trip_id",tripMap["trip_id"].toString());
+        bi.setTrip(tripMap["trip_id"].toString());
         QString route = tripMap["route_id"].toString();
+        bi.setRoute(route);
         m_posMap.insertMulti(route,pd);
         m_positions.insertMulti(Pos(lat,lon), route);
+        m_busPositions->addBus(bi);
         ++e;
     }
 
@@ -139,6 +161,9 @@ void source::gotPosReply()
     }
     qDebug() << " lat from " << latMin << " to " << latMax;
     qDebug() << " lon from " << lonMin << " to " << lonMax;
+    m_busPositions->setLatMin(latMin);
+    m_busPositions->setLonMin(lonMin);
+    m_busPositions->signalDataChanged();
    reportqs(QString ("finished %1").arg(Q_FUNC_INFO ));
 }
 

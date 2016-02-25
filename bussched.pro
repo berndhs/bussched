@@ -8,10 +8,14 @@ CONFIG += debug
 
 SOURCES += \
     src/main.cpp \
-    src/source.cpp
+    src/source.cpp \
+    src/buspositions.cpp \
+    src/businfo.cpp
 
 HEADERS += \
-    src/source.h
+    src/source.h \
+    src/buspositions.h \
+    src/businfo.h
 
 RESOURCES += qml.qrc
 

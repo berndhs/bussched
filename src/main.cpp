@@ -6,25 +6,28 @@
 #include <QDebug>
 #include <QMessageLogContext>
 #include "source.h"
+#include "buspositions.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-//void myDebug (QtMsgType type, const QMessageLogContext & context, const QString & msg)
-//{
-//    fprintf (stderr, ("severity %d msg %s\n",type,msg.toStdString().c_str()));
-//    fflush (stderr);
-//}
 
 int main(int argc, char *argv[])
 {
 
     qDebug() << Q_FUNC_INFO << "starting";
-//    qInstallMessageHandler(myDebug);
     QGuiApplication app(argc, argv);
+    source theSource;
+    theSource.askPositions();
+    BusPositions * theBuses = theSource.busPositions();
 
     QQmlApplicationEngine engine;
     qmlRegisterType<source>("com.berndhs",1,0,"Source");
+    qmlRegisterType<BusPositions>("com.berndhs",1,0,"BusPositions");
+    auto context = engine.rootContext();
+    context->setContextProperty("theSource",&theSource);
+    context->setContextProperty("buses",theBuses);
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     int done = app.exec();

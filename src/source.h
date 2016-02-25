@@ -9,12 +9,15 @@
 #include <QMultiMap>
 #include <QVariant>
 
+#include "buspositions.h"
+
 class source : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString sourceString READ sourceString WRITE setSourceString NOTIFY sourceStringChanged)
     Q_PROPERTY(int reqCount READ reqCount WRITE setReqCount NOTIFY reqCountChanged)
+    Q_PROPERTY(BusPositions* busPositions READ busPositions)
 
 
 public:
@@ -23,11 +26,17 @@ public:
     Q_INVOKABLE void askPositions();
     Q_INVOKABLE void getFormattedString (QString s);
     Q_INVOKABLE void printData();
+    Q_INVOKABLE void setXY(double xMin, double xMax, double yMin, double yMax);
 
 
     QString sourceString() const;
 
     int reqCount() const;
+
+    BusPositions * busPositions()
+    {
+        return m_busPositions;
+    }
 
 signals:
 
@@ -73,6 +82,7 @@ private:
 
     QMultiMap<QString,PosDataType> m_posMap;
     QMultiMap<Pos,QString>         m_positions;
+    BusPositions                  * m_busPositions;
 
     double latMin;
     double latMax;
