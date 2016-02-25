@@ -41,29 +41,58 @@ Window {
         }
         text: "Paint";
         onClicked: {
-            var ctx = theCanvas.getContext('2d');
-            ctx.strokeStyle = Qt.rgba(0, 0, 0, 1);
-            theCanvas.loadImage(theCanvas.imgurl);
-            ctx.drawImage(theCanvas.imgurl,50,50);
-            ctx.stroke();
-            console.log("have image ",theCanvas.gotImage)
         }
     }
 
-    Canvas {
-        id: theCanvas;
-        width: bigBox.width;
-        height: bigBox.height;
-        anchors.top: printButton.bottom;
-        anchors.left: bigBox.left;
-        property bool gotImage: false;
-        property string imgurl: "file:///home/bernd/mywork/publictransit/bussched/images/smallbus.jpg"
-        Component.onCompleted: {
-            loadImage(imgurl)
+    ListModel {
+        id: imgData;
+        ListElement {
+            thex: 100;
+            they: 100;
         }
+        ListElement {
+            thex: 50;
+            they: 100;
+        }
+        ListElement {
+            thex: 200;
+            they: 50;
+        }
+    }
 
-        onImageLoaded: {
-            gotImage = true;
+
+
+    Rectangle {
+        id: drawingMap;
+        width: bigBox.width - 10;
+        height: bigBox.height - printButton.height;
+        anchors.left: parent.left;
+        anchors.leftMargin: 5;
+        anchors.top: printButton.bottom;
+        property real basex: x;
+        property real basey: y;
+        color: "lightgrey";
+        ListView {
+            anchors.fill: drawingMap
+            model: imgData;
+            delegate: Rectangle {
+                color: "red";
+                width: 3; height: 3; radius: height/2;
+                x: thex + drawingMap.basex;
+                y: they + drawingMap.basey;
+                z: 50;
+    //            Image {
+    //                source: "/home/bernd/mywork/publictransit/bussched/images/smallbus.jpg";
+    //                x: thex;
+    //                y: they;
+    //                z: 50;
+    //            }
+                Image {
+                    anchors.centerIn: parent;
+                    source: "file:///home/bernd/mywork/publictransit/bussched/images/smallbus.jpg"
+                    clip: true;
+                }
+            }
         }
     }
 }
