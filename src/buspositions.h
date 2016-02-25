@@ -23,6 +23,13 @@ public:
     ~BusPositions();
 
     int rowCount() const;
+    Q_INVOKABLE double xPos(int row) const;
+    Q_INVOKABLE double yPos(int row) const;
+    Q_INVOKABLE QString route(int row) const;
+    Q_INVOKABLE double bearing(int row) const;
+    Q_INVOKABLE double lat(int row) const;
+    Q_INVOKABLE double lon(int row) const;
+    Q_INVOKABLE QString trip(int row) const;
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     QHash<int, QByteArray> roleNames() const;
@@ -65,12 +72,20 @@ private:
     QList<BusInfo> m_busList;
 
     QObject *m_parent;
-    // QAbstractItemModel interface
+
+
+
+    double xMin;
+    double yMin;
+    double xRange;
+    double yRange;
 public:
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex & index) const;
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
+
+    void setXY (double xMn, double xRnge, double yMn, double yRnge);
 };
 
 #endif // BUSPOSITIONS_H

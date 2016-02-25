@@ -18,13 +18,55 @@ int BusPositions::rowCount() const
 
 }
 
+double BusPositions::xPos(int row) const
+{
+    double xd = scaleX(m_busList[row].Lon());
+    return xd;
+}
+
+double BusPositions::yPos(int row) const
+{
+    double yd = scaleY(m_busList[row].Lat());
+    return yd;
+}
+
+QString BusPositions::route(int row) const
+{
+    QString rt = m_busList[row].Route();
+    return rt;
+}
+
+double BusPositions::bearing(int row) const
+{
+    double br = m_busList[row].Bearing();
+    return br;
+}
+
+double BusPositions::lat(int row) const
+{
+    double lati = m_busList[row].Lat();
+    return lati;
+}
+
+double BusPositions::lon(int row) const
+{
+    double longi = m_busList[row].Lon();
+    return longi;
+}
+
+QString BusPositions::trip(int row) const
+{
+    QString tr = m_busList[row].Trip();
+    return tr;
+}
+
 QVariant BusPositions::data(const QModelIndex &index, int role) const
 {
     QVariant result;
     int row = index.row();
     if (row >= 0 && row < rowCount() && role > TooSmall && role < TooBig) {
         BusInfo bi = m_busList[row];
-        switch (row) {
+        switch (role) {
         case XPOS:
             result = scaleX(bi.Lon());
             break;
@@ -83,12 +125,13 @@ void BusPositions::signalDataChanged()
 
 double BusPositions::scaleX(double lon) const
 {
-    return (lon-lonMin) * scaleLon;
+    qDebug() << Q_FUNC_INFO << lon << lonMin << scaleLon;
+    return (lon-lonMin) * scaleLon * xRange + xMin;
 }
 
 double BusPositions::scaleY(double lat) const
 {
-    return (lat-latMin) * scaleLat;
+    return (lat-latMin) * scaleLat * yRange + yMin;
 }
 
 QModelIndex BusPositions::index(int row, int column, const QModelIndex &parent) const
@@ -110,5 +153,11 @@ int BusPositions::rowCount(const QModelIndex &parent) const
 int BusPositions::columnCount(const QModelIndex &parent) const
 {
     return 1;
+}
+
+void BusPositions::setXY(double xMn, double xRnge, double yMn, double yRnge)
+{
+    xMin = xMn; xRange = xRnge;
+    yMin = yMn; yRange = yRnge;
 }
 

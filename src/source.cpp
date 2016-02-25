@@ -12,6 +12,7 @@
 #include <QByteArray>
 #include <QList>
 #include <iostream>
+#include <cmath>
 
 void reportc (const char* s)
 {
@@ -78,15 +79,16 @@ void source::printData()
 
 void source::setXY(double xMin, double xMax, double yMin, double yMax)
 {
-    double latRange = latMax - latMin;
-    double lonRange = lonMax - lonMin;
-    double xRange = xMax - xMin;
-    double yRange = yMax - yMin;
-    double latScale = latRange / yRange;
-    double lonScale = lonRange / xRange;
+    double latRange = abs(latMax - latMin);
+    double lonRange = abs(lonMax - lonMin);
+    double xRange = abs(xMax - xMin);
+    double yRange = abs(yMax - yMin);
+    double latScale = yRange / latRange;
+    double lonScale = xRange / lonRange;
     m_busPositions->setScaleLat(latScale);
     m_busPositions->setScaleLon(lonScale);
     m_busPositions->signalDataChanged();
+    m_busPositions->setXY (xMin,xRange, xMin, yRange);
 }
 
 QString source::sourceString() const

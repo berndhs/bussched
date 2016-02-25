@@ -83,6 +83,28 @@ Window {
             left: bigBox.left;
             leftMargin: 5;
         }
+        onWidthChanged: {
+            theSource.setXY(x,x+width,y,y+height);
+        }
+        onHeightChanged: {
+            theSource.setXY(x,x+width,y,y+height);
+        }
+        Component.onCompleted: {
+            theSource.setXY(x,x+width,y,y+height);
+        }
+
+        function drawCircle (midX,midY, wid, hite) {
+
+            var context = getContext("2d");
+            context.beginPath();
+            context.fillStyle = "orange"
+            context.strokeStyle = "red"
+            context.moveTo(midX/2+60, midX/2);
+            context.arc(wid, hite/2, 60, 0, 2*Math.PI, true)
+            context.fill();
+            context.stroke();
+        }
+
         function paintShit() {
 
             // Get drawing context
@@ -108,13 +130,14 @@ Window {
             context.stroke();
 
             // Draw a circle
+            drawCircle(width/2,height/2,width/2,height/2)/*
             context.beginPath();
             context.fillStyle = "orange"
             context.strokeStyle = "red"
             context.moveTo(width/2+60, height/2);
             context.arc(width/2, height/2, 60, 0, 2*Math.PI, true)
             context.fill();
-            context.stroke();
+            context.stroke();*/
 
             // Draw some text
             context.beginPath();
@@ -129,7 +152,17 @@ Window {
             context.strokeStyle = "red"
             var i;
             for (i=0; i<buses.rowCount(); i++) {
-                console.log ("Bus Position "+i)
+                var xx = buses.xPos(i);
+                var route = buses.route(i);
+                var lat = buses.lat(i);
+                var bear = buses.bearing(i);
+                var trip = buses.trip(i);
+                var lon = buses.lon(i);
+                var yy = buses.yPos(i);
+                drawCircle(xx,yy,5,5);
+
+                console.log ("Bus Position ",i, " x " ,xx , " y " , yy , " rt " , route
+                             , " lat/lon" , lat , lon , " bear " , bear , " trip " , trip);
             }
 
             context.fill();
