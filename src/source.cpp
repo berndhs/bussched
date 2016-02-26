@@ -79,16 +79,34 @@ void source::printData()
 
 void source::setXY(double xMin, double xMax, double yMin, double yMax)
 {
-    double latRange = abs(latMax - latMin);
-    double lonRange = abs(lonMax - lonMin);
-    double xRange = abs(xMax - xMin);
-    double yRange = abs(yMax - yMin);
-    double latScale = yRange / latRange;
-    double lonScale = xRange / lonRange;
+    long double latDiff = latMax - latMin;
+    long double lonDiff = lonMax - lonMin;
+    long double latRange = latDiff < 0 ? -latDiff : latDiff;
+    long double lonRange = lonDiff < 0 ? -lonDiff : lonDiff;
+    long double xRange = abs(xMax - xMin);
+    this->xRange = xRange;
+    long double yRange = abs(yMax - yMin);
+    this->yRange = yRange;
+    long double latScale = yRange / latRange;
+    long double lonScale = xRange / lonRange;
     m_busPositions->setScaleLat(latScale);
     m_busPositions->setScaleLon(lonScale);
     m_busPositions->signalDataChanged();
     m_busPositions->setXY (xMin,xRange, xMin, yRange);
+}
+
+void source::updateMap()
+{
+    qDebug() << Q_FUNC_INFO;
+    int handle = m_fileMaker.startFile("map_img_XXXXXX.svg",int(ceil(xRange)),int(ceil(yRange)));
+    qDebug() << " file handle " << handle;
+    // write the stuff into the file
+    for (int r=0;r<m_busPositions->rowCount();++r) {
+        qDebug() << Q_FUNC_INFO << "write bus " << r;
+        m_fileMaker.addCross(handle,m_busPositions->xPos(r),m_busPositions->yPos(r), 5);
+    }
+    QString name = m_fileMaker.closeFile(handle);
+    emit newMap(name);
 }
 
 QString source::sourceString() const
@@ -157,10 +175,10 @@ void source::gotPosReply()
 //   std::cout << "Position data ----------------------------------------------------\n" << theData.data() << std::endl;
 
     qDebug() << "Pos Data current";
-    for (auto it=m_posMap.begin(); it!= m_posMap.end(); ++it) {
-        qDebug() << it.key();
-        qDebug() << it.value();
-    }
+//    for (auto it=m_posMap.begin(); it!= m_posMap.end(); ++it) {
+//        qDebug() << it.key();
+//        qDebug() << it.value();
+//    }
     qDebug() << " lat from " << latMin << " to " << latMax;
     qDebug() << " lon from " << lonMin << " to " << lonMax;
     m_busPositions->setLatMin(latMin);

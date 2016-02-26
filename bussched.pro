@@ -10,12 +10,14 @@ SOURCES += \
     src/main.cpp \
     src/source.cpp \
     src/buspositions.cpp \
-    src/businfo.cpp
+    src/businfo.cpp \
+    src/makesvg.cpp
 
 HEADERS += \
     src/source.h \
     src/buspositions.h \
-    src/businfo.h
+    src/businfo.h \
+    src/makesvg.h
 
 RESOURCES += qml.qrc
 

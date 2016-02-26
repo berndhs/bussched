@@ -21,6 +21,7 @@ int BusPositions::rowCount() const
 double BusPositions::xPos(int row) const
 {
     double xd = scaleX(m_busList[row].Lon());
+    qDebug() << Q_FUNC_INFO << "row " << row << "lon" << m_busList[row].Lon() << "xd" << xd;
     return xd;
 }
 
@@ -126,12 +127,12 @@ void BusPositions::signalDataChanged()
 double BusPositions::scaleX(double lon) const
 {
     qDebug() << Q_FUNC_INFO << lon << lonMin << scaleLon;
-    return (lon-lonMin) * scaleLon * xRange + xMin;
+    return (lon-lonMin) / scaleLon * xRange + xMin;
 }
 
 double BusPositions::scaleY(double lat) const
 {
-    return (lat-latMin) * scaleLat * yRange + yMin;
+    return (lat-latMin) / scaleLat * yRange + yMin;
 }
 
 QModelIndex BusPositions::index(int row, int column, const QModelIndex &parent) const

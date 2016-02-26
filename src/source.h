@@ -9,6 +9,7 @@
 #include <QMultiMap>
 #include <QVariant>
 
+#include "makesvg.h"
 #include "buspositions.h"
 
 class source : public QObject
@@ -27,6 +28,8 @@ public:
     Q_INVOKABLE void getFormattedString (QString s);
     Q_INVOKABLE void printData();
     Q_INVOKABLE void setXY(double xMin, double xMax, double yMin, double yMax);
+    Q_INVOKABLE void updateMap();
+
 
 
     QString sourceString() const;
@@ -44,6 +47,7 @@ signals:
     void sourceStringChanged(QString sourceString);
 
     void reqCountChanged(int reqCount);
+    void newMap (QString mapName);
 
 public slots:
 
@@ -88,6 +92,10 @@ private:
     double latMax;
     double lonMin;
     double lonMax;
+    double xRange;
+    double yRange;
+
+    MakeSVG  m_fileMaker;
 };
 
 
