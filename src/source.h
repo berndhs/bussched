@@ -1,6 +1,30 @@
 #ifndef SOURCE_H
 #define SOURCE_H
 
+
+/****************************************************************
+ * This file is distributed under the following license:
+ *
+ * Copyright (C) 2016, Bernd Stramm
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ *  Boston, MA  02110-1301, USA.
+ ****************************************************************/
+
+
+
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -8,6 +32,7 @@
 #include <QMap>
 #include <QMultiMap>
 #include <QVariant>
+#include <QSet>
 
 #include "makesvg.h"
 #include "buspositions.h"
@@ -83,6 +108,8 @@ private:
 
     typedef QMap<QString,QVariant> PosDataType;
     typedef QPair<double,double>   Pos;
+
+    QSet <QString> usefulRoutes;
 
     QMultiMap<QString,PosDataType> m_posMap;
     QMultiMap<Pos,QString>         m_positions;

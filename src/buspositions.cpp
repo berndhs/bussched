@@ -1,6 +1,29 @@
 #include "buspositions.h"
 #include <QDebug>
 
+/****************************************************************
+ * This file is distributed under the following license:
+ *
+ * Copyright (C) 2016, Bernd Stramm
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ *  Boston, MA  02110-1301, USA.
+ ****************************************************************/
+
+
+
 BusPositions::BusPositions(QObject *parent)
     :QAbstractItemModel(parent)
 {
@@ -20,14 +43,17 @@ int BusPositions::rowCount() const
 
 double BusPositions::xPos(int row) const
 {
-    double xd = scaleX(m_busList[row].Lon());
+    double lon = m_busList[row].Lon();
+    double xd = ((lon + 118.2) / 1.2) * 800;
+//    double xd = scaleX(m_busList[row].Lon());
     qDebug() << Q_FUNC_INFO << "row " << row << "lon" << m_busList[row].Lon() << "xd" << xd;
     return xd;
 }
 
 double BusPositions::yPos(int row) const
 {
-    double yd = scaleY(m_busList[row].Lat());
+    double lat = m_busList[row].Lat();
+    double yd = ((34.5 - lat)/1.8) * 425 + 25;
     return yd;
 }
 

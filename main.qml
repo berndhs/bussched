@@ -48,7 +48,7 @@ Window {
     }
     Timer {
         id: refreshData;
-        interval: 2*60*1000;
+        interval: 30 * 1000; // 2*60*1000;
         repeat: true;
         running: true;
         onTriggered: {

@@ -3,6 +3,28 @@
 #include <QDebug>
 #include <QTemporaryFile>
 
+/****************************************************************
+ * This file is distributed under the following license:
+ *
+ * Copyright (C) 2016, Bernd Stramm
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ *  Boston, MA  02110-1301, USA.
+ ****************************************************************/
+
+
 MakeSVG::MakeSVG()
 {
 
@@ -37,7 +59,7 @@ QString MakeSVG::closeFile(int handle)
     return name;
 }
 
-void MakeSVG::addCross(int handle, double x, double y, double armLen, int width)
+void MakeSVG::addCross(int handle, double x, double y, double armLen, int width, QString color)
 {
     QFile * fp= m_files[handle];
     if (fp) {
@@ -47,7 +69,7 @@ void MakeSVG::addCross(int handle, double x, double y, double armLen, int width)
                 return;
             }
         }
-        QByteArray cross = svgCross(x,y,armLen,width).toLatin1();
+        QByteArray cross = svgCross(x,y,armLen,width, color).toLatin1();
         int  bytes = fp->write(cross);
         qDebug () << " wrote " << bytes << " as " << cross;
     }
@@ -72,18 +94,18 @@ MakeSVG::writeSvgTail (QIODevice * device)
     device->write ("\n</svg>\n");
 }
 
-QString
-MakeSVG::svgCross(double x, double y, double armLen, int width)
+QString MakeSVG::svgCross(double x, double y, double armLen, int width, QString color)
 {
     QString svg;
-    QString style (QString(" style=\"stroke: rgb(255,0,0);stroke-width:%1\"").arg(width));
-    svg.append (QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" ").arg(x).arg(y-armLen).arg(x).arg(y+armLen));
+    QString style (QString(" style=\"stroke-width:%1\"").arg(width));
+    svg.append (QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" stroke=\"%5\"").arg(x).arg(y-armLen).arg(x).arg(y+armLen).arg(color));
     svg.append (style);
     svg.append("/>\n");
-    svg.append (QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" ").arg(x-armLen).arg(y).arg(x+armLen).arg(y));
+    svg.append (QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" stroke=\"%5\"").arg(x-armLen).arg(y).arg(x+armLen).arg(y).arg(color));
     svg.append (style);
     svg.append("/>\n");
     return svg;
+
 }
 
 
