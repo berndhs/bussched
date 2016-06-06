@@ -41,13 +41,15 @@ public:
     int startFile(QString filePattern,int width, int height);
     QString closeFile (int handle); // return file name
 
-    void addCross (int handle, double x, double y, double armLen, int width=1, QString color= "#ff0000");
+    void addCross (int handle, double x, double y, double armLen, int width=1, QString color= "red");
+    void addText (int handle, double x, double y, QString txt, QString color = "red");
 
 private:
 
     void writeSvgHead (QIODevice * device, int width, int height);
     void writeSvgTail (QIODevice * device);
-    QString svgCross (double x, double y, double armLen, int width, QString color="#ff0000");
+    QString svgCross (double x, double y, double armLen, int width, QString color="#red");
+    QString svgText (double x, double y, QString txt, QString color="red");
 //    int  mappedLon (qreal rawLon);
 //    int  mappedLat (qreal rawLat);
 

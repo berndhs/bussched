@@ -46,6 +46,15 @@ Window {
             console.log ("found ",theSource.busPositions.rowCount(),"rows");
         }
     }
+    Text {
+        id: busCount;
+        anchors {
+            left: printButton.right; leftMargin: 20;
+            top: bigBox.top; topMargin: 5;
+        }
+        text: theSource.busCount + qsTr(" Buses");
+    }
+
     Timer {
         id: refreshData;
         interval: 30 * 1000; // 2*60*1000;

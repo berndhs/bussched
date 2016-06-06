@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
+    qDebug () << Q_FUNC_INFO << "starting";
     int done = app.exec();
     qDebug () << Q_FUNC_INFO << "all done" << done;
 }

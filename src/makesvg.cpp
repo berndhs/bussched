@@ -38,9 +38,9 @@ int MakeSVG::startFile(QString filePattern, int width, int height)
     qDebug() << Q_FUNC_INFO << "temp files pattern " << tmpTemplate;
     QTemporaryFile *newMap = new QTemporaryFile (tmpTemplate);
     newMap->open();
+    qDebug() << Q_FUNC_INFO << " file " << newMap->fileName();
     int newHandle = m_files.count();
     m_files[newHandle] = newMap;
-    qDebug() << Q_FUNC_INFO << "temp file pointer " << newMap;
     writeSvgHead(newMap, width, height);
     qDebug() << "file will be " << newMap->fileName();
     return newHandle;
@@ -66,12 +66,28 @@ void MakeSVG::addCross(int handle, double x, double y, double armLen, int width,
         if (!fp->isOpen()) {
             fp->open(QFile::WriteOnly);
             if (!fp->isOpen()) {
+                qDebug () << Q_FUNC_INFO << "bailing";
                 return;
             }
         }
         QByteArray cross = svgCross(x,y,armLen,width, color).toLatin1();
         int  bytes = fp->write(cross);
-        qDebug () << " wrote " << bytes << " as " << cross;
+    }
+}
+
+void MakeSVG::addText(int handle, double x, double y, QString txt, QString color)
+{
+    QFile * fp= m_files[handle];
+    if (fp) {
+        if (!fp->isOpen()) {
+            fp->open(QFile::WriteOnly);
+            if (!fp->isOpen()) {
+                qDebug () << Q_FUNC_INFO << "bailing";
+                return;
+            }
+        }
+        QByteArray text = svgText(x,y,txt,color).toLatin1();
+        int bytes = fp->write(text);
     }
 }
 
@@ -94,7 +110,8 @@ MakeSVG::writeSvgTail (QIODevice * device)
     device->write ("\n</svg>\n");
 }
 
-QString MakeSVG::svgCross(double x, double y, double armLen, int width, QString color)
+QString
+MakeSVG::svgCross(double x, double y, double armLen, int width, QString color)
 {
     QString svg;
     QString style (QString(" style=\"stroke-width:%1\"").arg(width));
@@ -104,6 +121,17 @@ QString MakeSVG::svgCross(double x, double y, double armLen, int width, QString 
     svg.append (QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" stroke=\"%5\"").arg(x-armLen).arg(y).arg(x+armLen).arg(y).arg(color));
     svg.append (style);
     svg.append("/>\n");
+    return svg;
+
+}
+
+QString
+MakeSVG::svgText(double x, double y, QString txt, QString color)
+{
+    QString svg;
+    svg.append (QString ("<text x=\"%1\" y=\"%2\" fill=\"#000000\">").arg(x).arg(y).arg(color));
+    svg.append (txt);
+    svg.append ("</text>\n");
     return svg;
 
 }

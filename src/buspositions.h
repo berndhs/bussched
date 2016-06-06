@@ -109,6 +109,7 @@ public:
     int columnCount(const QModelIndex &parent) const;
 
     void setXY (double xMn, double xRnge, double yMn, double yRnge);
+    void clear();
 };
 
 #endif // BUSPOSITIONS_H

@@ -76,7 +76,9 @@ source::source(QObject *parent) : QObject(parent),
 {
     reportc(Q_FUNC_INFO);
     m_busPositions = new BusPositions(this);
-    usefulRoutes << "1" << "177" << "89";
+    usefulRoutes << "1" << "177" << "89" << "83";
+    util.setX(0,800);
+    util.setY(25,600);
 }
 
 void source::askPositions()
@@ -127,15 +129,19 @@ void source::updateMap()
     // write the stuff into the file
     for (int r=0;r<m_busPositions->rowCount();++r) {
         QString rt = m_busPositions->route(r);
-        QString col = (rt == "89" ? "#ffffff" : ( rt = "1" ? "#00ff00" : (rt == "177" ? "#0000ff" : "ff0000")));
+        QString col = "#ffffff"; // (rt == "89" ? "#ffffff" : ( rt = "1" ? "green" : (rt == "177" ? "blue" : (rt == "83" ? "black" :  "red"))));
         if (rt == "177") {
             col = "#00ffff";
             qDebug() <<  177 << "at " << m_busPositions->xPos(r),m_busPositions->yPos(r);
-            Q_ASSERT (false);
         }
 
-        m_fileMaker.addCross(handle,m_busPositions->xPos(r),m_busPositions->yPos(r), 5, 1, col);
+//        m_fileMaker.addCross(handle,m_busPositions->xPos(r),m_busPositions->yPos(r), 5, 1, col);
+        m_fileMaker.addText(handle,m_busPositions->xPos(r),m_busPositions->yPos(r),rt);
     }
+    QString red ("#ff0000");
+    m_fileMaker.addCross(handle, util.xPos(-117.801155),util.yPos(33.548556), 4,2,red);
+    m_fileMaker.addCross(handle, util.xPos(-117.712534),util.yPos(33.612503), 4,2,red);
+    m_fileMaker.addCross(handle, util.xPos(-117.673855),util.yPos(33.66451), 4,2,red);
     QString name = m_fileMaker.closeFile(handle);
     emit newMap(name);
 }
@@ -219,6 +225,8 @@ void source::gotPosReply()
     m_busPositions->setLatMin(latMin);
     m_busPositions->setLonMin(lonMin);
     m_busPositions->signalDataChanged();
+    util.setLat (latMin, latMax);
+    util.setLon (lonMin, lonMax);
     reportqs(QString ("finished %1").arg(Q_FUNC_INFO ));
 }
 

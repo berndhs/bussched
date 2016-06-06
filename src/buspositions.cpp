@@ -53,7 +53,7 @@ double BusPositions::xPos(int row) const
 double BusPositions::yPos(int row) const
 {
     double lat = m_busList[row].Lat();
-    double yd = ((34.5 - lat)/1.8) * 425 + 25;
+    double yd = ((34 - lat)/1.5) * 425 + 25;
     return yd;
 }
 
@@ -186,5 +186,12 @@ void BusPositions::setXY(double xMn, double xRnge, double yMn, double yRnge)
 {
     xMin = xMn; xRange = xRnge;
     yMin = yMn; yRange = yRnge;
+}
+
+void BusPositions::clear()
+{
+    int oldEnd = m_busList.count() -1;
+    m_busList.clear();
+//    emit rowsRemoved(this->createIndex(0,0,(void*)0), 0,oldEnd);
 }
 

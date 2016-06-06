@@ -36,6 +36,7 @@
 
 #include "makesvg.h"
 #include "buspositions.h"
+#include "util.h"
 
 class source : public QObject
 {
@@ -44,6 +45,7 @@ class source : public QObject
     Q_PROPERTY(QString sourceString READ sourceString WRITE setSourceString NOTIFY sourceStringChanged)
     Q_PROPERTY(int reqCount READ reqCount WRITE setReqCount NOTIFY reqCountChanged)
     Q_PROPERTY(BusPositions* busPositions READ busPositions)
+    Q_PROPERTY(int busCount READ busCount NOTIFY busCountChanged)
 
 
 public:
@@ -66,6 +68,11 @@ public:
         return m_busPositions;
     }
 
+    int busCount() const
+    {
+        return m_busPositions->rowCount();
+    }
+
 signals:
 
 
@@ -73,6 +80,8 @@ signals:
 
     void reqCountChanged(int reqCount);
     void newMap (QString mapName);
+
+    void busCountChanged(int busCount);
 
 public slots:
 
@@ -123,6 +132,8 @@ private:
     double yRange;
 
     MakeSVG  m_fileMaker;
+    Util util;
+    int m_busCount;
 };
 
 
