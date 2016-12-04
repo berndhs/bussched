@@ -57,7 +57,7 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     QHash<int, QByteArray> roleNames() const;
 
-    void addBus(BusInfo bi);
+    int addBus(BusInfo bi);
 
     void setLatMin (double lm) { latMin = lm; }
     void setLonMin (double lm) { lonMin = lm; }

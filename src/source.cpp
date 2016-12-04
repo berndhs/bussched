@@ -12,7 +12,9 @@
 #include <QByteArray>
 #include <QList>
 #include <iostream>
-#include <cmath>
+#include <QtGlobal>
+#include <QtMath>
+//#include <cmath>
 
 
 /****************************************************************
@@ -76,9 +78,11 @@ source::source(QObject *parent) : QObject(parent),
 {
     reportc(Q_FUNC_INFO);
     m_busPositions = new BusPositions(this);
-    usefulRoutes << "1" << "177" << "89" << "83";
+    m_busPositions->clear();
+    usefulRoutes << "1" << "177" << "89" << "211";
     util.setX(0,800);
     util.setY(25,600);
+    loadStations();
 }
 
 void source::askPositions()
@@ -105,13 +109,14 @@ void source::printData()
 
 void source::setXY(double xMin, double xMax, double yMin, double yMax)
 {
+  qDebug() << Q_FUNC_INFO ;
     long double latDiff = latMax - latMin;
     long double lonDiff = lonMax - lonMin;
     long double latRange = latDiff < 0 ? -latDiff : latDiff;
     long double lonRange = lonDiff < 0 ? -lonDiff : lonDiff;
-    long double xRange = abs(xMax - xMin);
+    long double xRange = qAbs(xMax - xMin);
     this->xRange = xRange;
-    long double yRange = abs(yMax - yMin);
+    long double yRange = qAbs(yMax - yMin);
     this->yRange = yRange;
     long double latScale = yRange / latRange;
     long double lonScale = xRange / lonRange;
@@ -121,29 +126,76 @@ void source::setXY(double xMin, double xMax, double yMin, double yMax)
     m_busPositions->setXY (xMin,xRange, xMin, yRange);
 }
 
+void source::loadStations()
+{
+  qDebug() << Q_FUNC_INFO;
+  int s;
+  QString stat = "RockyPt";
+  s = addStation(33.774325,-118.425434, stat);
+  stat = "LB Air";
+  s = addStation(33.821268, -118.156187,stat);
+  stat = "LB center";
+  s = addStation( 33.542731, -117.785409, stat);
+  stat = "Alexey";
+  s = addStation ( 33.634248, -117.702952,stat);
+  stat = "LH Trans";
+  s = addStation (33.607124, -117.705243 , stat);
+  stat = "DanaPt";
+  s = addStation (33.468004, -117.686820 , stat);
+  stat = "Newport";
+  s = addStation (33.614214, -117.868226, stat);
+  stat = "SanO Nuke";
+  s = addStation (33.368242, -117.555048, stat);
+  if (s < 4) {
+    qDebug() << s << "is not right";
+    exit(255-s);
+  }
+  m_stations = s;
+  qDebug() << Q_FUNC_INFO << "have " << m_stations << "stations";
+}
+
 void source::updateMap()
 {
     qDebug() << Q_FUNC_INFO;
-    int handle = m_fileMaker.startFile("map_img_XXXXXX.svg",int(ceil(xRange)),int(ceil(yRange)));
+    int handle = m_fileMaker.startFile("map_img_XXXXXX.svg",int(qCeil(800)),int(qCeil(400)));
     qDebug() << " file handle " << handle;
+
+    QString green ("#00a000"); // green
+    QString red ("#ff0000");
+    qDebug() << "have " << m_stations << "stations, " << m_busPositions->rowCount() << "rows";
     // write the stuff into the file
     for (int r=0;r<m_busPositions->rowCount();++r) {
         QString rt = m_busPositions->route(r);
-        QString col = "#ffffff"; // (rt == "89" ? "#ffffff" : ( rt = "1" ? "green" : (rt == "177" ? "blue" : (rt == "83" ? "black" :  "red"))));
-        if (rt == "177") {
-            col = "#00ffff";
-            qDebug() <<  177 << "at " << m_busPositions->xPos(r),m_busPositions->yPos(r);
+        QString col;
+        if (r < m_stations) {
+          col = red;
+        } else {
+          col = green;
         }
 
+        qDebug() <<  rt << "at " << m_busPositions->xPos(r),m_busPositions->yPos(r);
+
 //        m_fileMaker.addCross(handle,m_busPositions->xPos(r),m_busPositions->yPos(r), 5, 1, col);
-        m_fileMaker.addText(handle,m_busPositions->xPos(r),m_busPositions->yPos(r),rt);
+        m_fileMaker.addText(handle,m_busPositions->xPos(r),m_busPositions->yPos(r),rt,col);
     }
-    QString red ("#ff0000");
-    m_fileMaker.addCross(handle, util.xPos(-117.801155),util.yPos(33.548556), 4,2,red);
-    m_fileMaker.addCross(handle, util.xPos(-117.712534),util.yPos(33.612503), 4,2,red);
-    m_fileMaker.addCross(handle, util.xPos(-117.673855),util.yPos(33.66451), 4,2,red);
     QString name = m_fileMaker.closeFile(handle);
     emit newMap(name);
+    qDebug() << Q_FUNC_INFO << "file was" << name;
+}
+
+int source::addStation(double lat, double lon, QString name)
+{
+  BusInfo station;
+  station.setLat(lat);
+  station.setLon(lon);
+  station.setBearing(0);
+  station.setSpeed(0);
+  station.setTrip("stay");
+  station.setRoute(name);
+  m_positions.insertMulti(Pos(lat,lon), name);
+  int p = m_busPositions->addBus(station);
+  qDebug() << Q_FUNC_INFO << "insert" << name << " at " << p;
+  return p;
 }
 
 QString source::sourceString() const
@@ -266,4 +318,9 @@ void source::setReqCount(int reqCount)
 
     m_reqCount = reqCount;
     emit reqCountChanged(reqCount);
+}
+
+void source::stop ()
+{
+  exit (0);
 }

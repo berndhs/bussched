@@ -56,6 +56,9 @@ public:
     Q_INVOKABLE void printData();
     Q_INVOKABLE void setXY(double xMin, double xMax, double yMin, double yMax);
     Q_INVOKABLE void updateMap();
+    Q_INVOKABLE void stop();
+
+    int addStation (double lat, double lon, QString name);
 
 
 
@@ -94,6 +97,8 @@ public slots:
     void setReqCount(int reqCount);
 
 private:
+
+    void loadStations();
 
     void pickApartPos (QByteArray theData);
 
@@ -134,6 +139,8 @@ private:
     MakeSVG  m_fileMaker;
     Util util;
     int m_busCount;
+
+    int m_stations;
 };
 
 

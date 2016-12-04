@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QTemporaryFile>
+#include "util.h"
 
 /****************************************************************
  * This file is distributed under the following license:
@@ -43,6 +44,7 @@ int MakeSVG::startFile(QString filePattern, int width, int height)
     m_files[newHandle] = newMap;
     writeSvgHead(newMap, width, height);
     qDebug() << "file will be " << newMap->fileName();
+    fileName = newMap->fileName();
     return newHandle;
 }
 
@@ -88,7 +90,11 @@ void MakeSVG::addText(int handle, double x, double y, QString txt, QString color
         }
         QByteArray text = svgText(x,y,txt,color).toLatin1();
         int bytes = fp->write(text);
-    }
+      }
+}
+
+void MakeSVG::defaultMarks()
+{
 }
 
 void
@@ -129,9 +135,10 @@ QString
 MakeSVG::svgText(double x, double y, QString txt, QString color)
 {
     QString svg;
-    svg.append (QString ("<text x=\"%1\" y=\"%2\" fill=\"#000000\">").arg(x).arg(y).arg(color));
+    svg.append (QString ("<text x=\"%1\" y=\"%2\" fill=\"%3\" >").arg(x).arg(y).arg(color));
     svg.append (txt);
     svg.append ("</text>\n");
+    qDebug() << svg;
     return svg;
 
 }

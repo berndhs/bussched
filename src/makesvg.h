@@ -42,7 +42,9 @@ public:
     QString closeFile (int handle); // return file name
 
     void addCross (int handle, double x, double y, double armLen, int width=1, QString color= "red");
-    void addText (int handle, double x, double y, QString txt, QString color = "red");
+    void addText (int handle, double x, double y, QString txt, QString color);
+
+    void defaultMarks();
 
 private:
 
@@ -54,6 +56,7 @@ private:
 //    int  mappedLat (qreal rawLat);
 
     QMap<int, QFile*> m_files;
+    QString fileName;
 };
 
 #endif // MAKESVG_H

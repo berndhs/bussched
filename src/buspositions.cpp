@@ -138,9 +138,13 @@ QHash<int, QByteArray> BusPositions::roleNames() const
     return roles;
 }
 
-void BusPositions::addBus(BusInfo bi)
+int BusPositions::addBus(BusInfo bi)
 {
+  static int callCount(0);
+  ++callCount;
+  qDebug() << Q_FUNC_INFO << "called " << callCount << "times for" << bi.Route();
     m_busList.append(bi);
+    return m_busList.count();
 }
 
 void BusPositions::signalDataChanged()
